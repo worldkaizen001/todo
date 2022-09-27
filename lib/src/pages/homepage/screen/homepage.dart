@@ -1,0 +1,303 @@
+part of '../homepage_page.dart';
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+
+  String formatTime (Duration duration){
+    String twoDigits (int n) => n.toString().padLeft(2,'0');
+
+    final hours = twoDigits(duration.inHours);
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+    return [
+      if(duration.inHours > 0) hours,minutes,seconds
+    ].join(':');
+  }
+
+  final  timeOfDay = TimeOfDay.now();
+
+  // final _myBox = Hive.box('myBox');
+  // TodoDataBase db = TodoDataBase();
+
+  late Box<TodoModel> todoBox;
+
+  @override
+  void initState(){
+    // if(_myBox.get('TODOLIST') == null){
+    //   db.initialOpening();
+    // }else{
+    //   db.loadData();
+    // }
+    todoBox = Hive.box<TodoModel>('box');
+    super.initState();
+  }
+
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    // TodoModel todoModel = box.get('');
+
+
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Iconsax.add,size: 30,),
+          onPressed: (){
+            showModalBottomSheet(
+                isScrollControlled: true,
+                backgroundColor: const Color(0xffFDFDFD),
+                shape: const RoundedRectangleBorder(
+                    borderRadius:
+                    BorderRadius.vertical(top: Radius.circular(20))),
+                context: context,
+                builder: (context) {
+                  return const AddTodoWidget();
+                });
+      }),
+      appBar: AppBar(
+        centerTitle: true,
+
+        actions: [
+          Text(timeOfDay.toString()),
+          IconButton(onPressed: (){}, icon: Icon(Iconsax.cloud_lightning))
+        ],
+      ),
+      body: Column(
+        children: [
+         SizedBox(
+            height: 500,
+            child: ValueListenableBuilder(
+
+              valueListenable: todoBox.listenable(),
+              builder: (BuildContext context, Box<TodoModel> todos, Widget? child) {
+
+                List<int> keys = todos.keys.cast<int>().toList();
+
+                return todoBox.isEmpty? EmptyState(): ListView.builder(
+                    itemCount: box.length,
+
+                    // itemCount: db.todoModelList.length,
+                    itemBuilder: (context,index){
+                      // var data = box.values[index];
+                      // var data = db.todoModelList[index];
+                      final int key = keys[index];
+                      final TodoModel? todo = todos.get(key);
+                      return Slidable(
+
+                          key: const ValueKey(0),
+                          endActionPane: ActionPane(
+                              motion: const ScrollMotion(),
+                              dismissible: DismissiblePane(onDismissed: () {
+                                setState((){
+                                  todoBox.deleteAt(index);
+
+
+                                  // db.todoModelList.removeAt(index);
+                                  // db.updateDatabase();
+                                });
+
+
+                              }),
+                              children: [
+                                SlidableAction(
+
+                                  onPressed: (v){},
+                                  backgroundColor: const Color(0xFFFE4A49),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.delete,
+                                  label: 'Delete',
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ]),
+
+                          child: TodoWidget(title: todo!.title,reward: todo.reward,));
+                    });
+              },
+
+            ),
+          )
+        ]
+      )
+    );
+  }
+}
+
+
+class AddTodoWidget extends StatefulWidget {
+
+  const AddTodoWidget({Key? key}) : super(key: key);
+
+  @override
+  State<AddTodoWidget> createState() => _AddTodoWidgetState();
+}
+
+class _AddTodoWidgetState extends State<AddTodoWidget> {
+  final formGlobalKey = GlobalKey<FormState>();
+  final TextEditingController  titleController = TextEditingController();
+  final TextEditingController  rewardController = TextEditingController();
+  late Box<TodoModel> todoBox;
+
+  // TodoDataBase db = TodoDataBase();
+
+  @override
+  void initState(){
+    todoBox = Hive.box<TodoModel>('box');
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin:
+      const EdgeInsets.only(left: 23, right: 23, top: 25, bottom: 30),
+      padding:
+      EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+          color: Color(0xffFDFDFD)),
+      child: Form(
+        key: formGlobalKey ,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Title',
+                  style: GoogleFonts.quicksand(
+                      textStyle: const TextStyle(
+                        color: Color(0xff1E1B1B),
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+
+                      )),
+                ),
+                TextFormField(
+                  controller: titleController,
+                  validator: (val) {
+                    if (val!.isEmpty) {
+                      return 'Please enter title';
+                    }
+
+                  },
+                  maxLines: 1,
+
+                  onChanged: (val) {
+
+                  },
+
+                  decoration:  InputDecoration(
+                      hintStyle: GoogleFonts.quicksand(
+                          textStyle: const TextStyle(
+                            color: Color(0xff555555),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+
+                          )),
+
+
+                      hintText: 'What do you want vent about'),
+
+                ),
+                const SizedBox(
+                  height: 17,
+                ),
+                Text(
+                  'Reward',
+                  style: GoogleFonts.quicksand(
+                      textStyle: const TextStyle(
+                        color: Color(0xff1E1B1B),
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+
+                      )),
+                ),
+                TextFormField(
+                  controller: rewardController,
+                  maxLines: 1,
+                  validator: (val) {
+                    if (val!.isEmpty) {
+                      return 'Please enter description';
+                    }
+
+                  },
+                  onChanged: (val) {
+
+                  },
+                  decoration:  InputDecoration(
+                      hintStyle: GoogleFonts.quicksand(
+                          textStyle: const TextStyle(
+                            color: Color(0xff555555),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+
+                          )),
+
+
+                      hintText: 'Share more details about space'),
+                ),
+                const SizedBox(
+                  height: 35,
+                ),
+              ],
+            ),
+            Align(
+              alignment: Alignment.topRight,
+                child: SizedBox(
+                  height: 37,
+                  width: 100,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+
+                    ),
+                      onPressed: (){
+                        if(formGlobalKey.currentState!.validate()){
+                          todoBox.add(TodoModel(title: titleController.text.trim(), reward: rewardController.text.trim()));
+
+                          // db.todoModelList.add(TodoModel(title: titleController.text.trim(), reward: descriptionController.text.trim(), completionTime: 'With'));
+                          setState((){});
+                          Navigator.pop(context);
+                          titleController.clear();
+                          rewardController.clear();
+                          print('Lenght: ${todoBox.length}');
+                          // print("length is ${db.todoModelList.length}");
+                        }
+                      }, child: const Text('Add Todo')),
+                ))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+class EmptyState extends StatelessWidget {
+  const EmptyState({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        children: [
+          Text('New Empty')
+        ],
+      ),
+    );
+  }
+}
+

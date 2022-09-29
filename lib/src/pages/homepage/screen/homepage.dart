@@ -23,20 +23,25 @@ class _HomePageState extends State<HomePage> {
 
   final  timeOfDay = TimeOfDay.now();
 
-  // final _myBox = Hive.box('myBox');
-  // TodoDataBase db = TodoDataBase();
+
 
   late Box<TodoModel> todoBox;
 
   @override
   void initState(){
-    // if(_myBox.get('TODOLIST') == null){
-    //   db.initialOpening();
-    // }else{
-    //   db.loadData();
-    // }
+    
     todoBox = Hive.box<TodoModel>('box');
+    initialization();
     super.initState();
+  }
+
+
+
+
+  void initialization() async {
+    await Future.delayed(const Duration(seconds: 1));
+    print('go!');
+    FlutterNativeSplash.remove();
   }
 
 
@@ -50,12 +55,16 @@ class _HomePageState extends State<HomePage> {
 
 
     return Scaffold(
+
+      resizeToAvoidBottomInset: false,
+      backgroundColor: const Color(0xff141414),
       floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.deepPurple,
         child: const Icon(Iconsax.add,size: 30,),
           onPressed: (){
             showModalBottomSheet(
                 isScrollControlled: true,
-                backgroundColor: const Color(0xffFDFDFD),
+                backgroundColor: const Color(0xff141414),
                 shape: const RoundedRectangleBorder(
                     borderRadius:
                     BorderRadius.vertical(top: Radius.circular(20))),
@@ -65,12 +74,25 @@ class _HomePageState extends State<HomePage> {
                 });
       }),
       appBar: AppBar(
-        centerTitle: true,
+        toolbarHeight: 80,
+        leadingWidth: 95,
 
-        actions: [
-          Text(timeOfDay.toString()),
-          IconButton(onPressed: (){}, icon: Icon(Iconsax.cloud_lightning))
-        ],
+        leading: Center(
+          child: Text('Stacks',style: GoogleFonts.quicksand(
+              textStyle: const TextStyle(
+                color: Color(0xffffffff),
+                fontSize: 25,
+                fontWeight: FontWeight.w500,
+
+              )),),
+        ),
+
+        backgroundColor: Colors.deepPurple,
+
+
+        // actions: [
+        //   Text(timeOfDay.toString()),
+        // ],
       ),
       body: Column(
         children: [
@@ -83,7 +105,7 @@ class _HomePageState extends State<HomePage> {
 
                 List<int> keys = todos.keys.cast<int>().toList();
 
-                return todoBox.isEmpty? EmptyState(): ListView.builder(
+                return todoBox.isEmpty? const EmptyState(): ListView.builder(
                     itemCount: box.length,
 
                     // itemCount: db.todoModelList.length,
@@ -111,11 +133,14 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 SlidableAction(
 
-                                  onPressed: (v){},
+                                  onPressed: (v){
+                                    todoBox.deleteAt(index);
+                                  },
                                   backgroundColor: const Color(0xFFFE4A49),
                                   foregroundColor: Colors.white,
-                                  icon: Icons.delete,
+                                  icon: Iconsax.trash,
                                   label: 'Delete',
+
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                               ]),
@@ -159,14 +184,18 @@ class _AddTodoWidgetState extends State<AddTodoWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin:
-      const EdgeInsets.only(left: 23, right: 23, top: 25, bottom: 30),
+
+
+
+      margin: const EdgeInsets.only(left: 23, right: 23, top: 25, bottom: 10),
       padding:
       EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       decoration: const BoxDecoration(
+
+
           borderRadius: BorderRadius.only(
               topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-          color: Color(0xffFDFDFD)),
+          color:  Color(0xff141414),),
       child: Form(
         key: formGlobalKey ,
         child: Column(
@@ -179,18 +208,26 @@ class _AddTodoWidgetState extends State<AddTodoWidget> {
                   'Title',
                   style: GoogleFonts.quicksand(
                       textStyle: const TextStyle(
-                        color: Color(0xff1E1B1B),
+                        color: Color(0xffffffff),
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
 
                       )),
                 ),
                 TextFormField(
+                  style: GoogleFonts.quicksand(
+                      textStyle: const TextStyle(
+                        color: Color(0xffffffff),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+
+                      )),
                   controller: titleController,
                   validator: (val) {
                     if (val!.isEmpty) {
                       return 'Please enter title';
                     }
+                    return null;
 
                   },
                   maxLines: 1,
@@ -209,6 +246,7 @@ class _AddTodoWidgetState extends State<AddTodoWidget> {
                           )),
 
 
+
                       hintText: 'What do you want vent about'),
 
                 ),
@@ -219,19 +257,27 @@ class _AddTodoWidgetState extends State<AddTodoWidget> {
                   'Reward',
                   style: GoogleFonts.quicksand(
                       textStyle: const TextStyle(
-                        color: Color(0xff1E1B1B),
+                        color: Color(0xffffffff),
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
 
                       )),
                 ),
                 TextFormField(
+                  style: GoogleFonts.quicksand(
+                      textStyle: const TextStyle(
+                        color: Color(0xffffffff),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+
+                      )),
                   controller: rewardController,
                   maxLines: 1,
                   validator: (val) {
                     if (val!.isEmpty) {
                       return 'Please enter description';
                     }
+                    return null;
 
                   },
                   onChanged: (val) {
@@ -261,21 +307,27 @@ class _AddTodoWidgetState extends State<AddTodoWidget> {
                   width: 100,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      primary: Colors.deepPurple,
+
 
                     ),
                       onPressed: (){
                         if(formGlobalKey.currentState!.validate()){
                           todoBox.add(TodoModel(title: titleController.text.trim(), reward: rewardController.text.trim()));
 
-                          // db.todoModelList.add(TodoModel(title: titleController.text.trim(), reward: descriptionController.text.trim(), completionTime: 'With'));
                           setState((){});
                           Navigator.pop(context);
                           titleController.clear();
                           rewardController.clear();
-                          print('Lenght: ${todoBox.length}');
-                          // print("length is ${db.todoModelList.length}");
+
                         }
-                      }, child: const Text('Add Todo')),
+                      }, child:  Text('Add Todo',style: GoogleFonts.quicksand(
+                      textStyle: const TextStyle(
+                        color: Color(0xffffffff),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+
+                      )),)),
                 ))
           ],
         ),
@@ -293,8 +345,16 @@ class EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('New Empty')
+          Text('New Empty',style: GoogleFonts.quicksand(
+              textStyle: const TextStyle(
+                color: Color(0xffffffff),
+                fontSize: 17,
+                fontWeight: FontWeight.w500,
+
+              )),),
+          Center(child: Image.asset(TodoImages.defaultPic,height: ScreenSize.height(context) * 0.5,width: ScreenSize.width(context) * 0.5,))
         ],
       ),
     );

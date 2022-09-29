@@ -1,4 +1,4 @@
-# todoapp
+# stacks
 
 A new Flutter project.
 

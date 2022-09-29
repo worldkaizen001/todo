@@ -1,17 +1,17 @@
-part of " ../onboarding_page.dart";
+part of 'package:stacks/src/pages/boarding/onboarding_page.dart';
 
 class OnBoardingWidget extends StatelessWidget {
   final String? skip;
   final String image;
   final String title;
-  final String subTitle;
+
   final String next;
   final Color titleTextColor;
   final Color skipTextColor;
-  final Color subTitleTextColor;
+
   final Color color;
 
-  const OnBoardingWidget({required this.skipTextColor,required this.subTitleTextColor,required this.titleTextColor,required this.color,required this.image,required this.title,required this.subTitle,this.skip,required this.next,Key? key}) : super(key: key);
+  const OnBoardingWidget({required this.skipTextColor,required this.titleTextColor,required this.color,required this.image,required this.title,this.skip,required this.next,Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +50,7 @@ class OnBoardingWidget extends StatelessWidget {
 
               )),),
           const SizedBox(height: 10),
-          Text(subTitle,style: GoogleFonts.quicksand(
-              textStyle: TextStyle(
-                color: subTitleTextColor,
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
 
-              )),),
           const SizedBox(
             height: 90,
           ),

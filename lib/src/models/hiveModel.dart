@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 
 import 'package:hive/hive.dart';
-import 'package:todoapp/src/models/todoModel.dart';
+import 'package:stacks/src/models/todoModel.dart';
 
 part 'hiveModel.g.dart';
 

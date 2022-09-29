@@ -1,4 +1,5 @@
-part of " ../onboarding_page.dart";
+
+part of 'package:stacks/src/pages/boarding/onboarding_page.dart';
 
 
 
@@ -38,6 +39,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
 final pages = [
 
-OnBoardingWidget(image: TodoImages.defaultPic, skipTextColor: const Color(0xff555555),subTitleTextColor: const Color(0xff303030).withOpacity(0.8), titleTextColor: const Color(0xff303030), color: const Color(0xffFDFDFD),skip: 'Skip',title: 'A place to Vent', subTitle: 'Share how you feel with people who can relate.',next: '',),
-OnBoardingWidget(skipTextColor: const Color(0xffffffff),subTitleTextColor:const Color(0xffffffff).withOpacity(0.8), titleTextColor: const Color(0xffffffff),color: const Color(0xff353535),image: '',skip: 'Skip',title: 'Support Group', subTitle: 'Join various circles to be part of a particular relatable people.',next: '',),
-OnBoardingWidget(skipTextColor: const Color(0xff555555),subTitleTextColor: const Color(0xff303030).withOpacity(0.8), titleTextColor: const Color(0xff303030),color: const Color(0xffFDFDFD),image: '',skip: '',title: 'Conversations', subTitle: 'Join & Create spaces to vent with friends and encourage each other',next: 'Next',)];
+ OnBoardingWidget(image: TodoImages.defaultPic, skipTextColor: const Color(0xff555555), titleTextColor: const Color(0xff303030), color: const Color(0xffFDFDFD),skip: 'Skip',title: '“Procrastination usually results in sorrowful regret. Today’s duties put off tomorrow give us a double burden to bear; the best way is to do them in their proper time.”',next: '',),
+const OnBoardingWidget(skipTextColor: const Color(0xffffffff), titleTextColor: const Color(0xffffffff),color: const Color(0xff353535),image: '',skip: 'Skip',title: 'Support Group', next: '',),
+const OnBoardingWidget(skipTextColor: const Color(0xff555555), titleTextColor: const Color(0xff303030),color: const Color(0xffFDFDFD),image: '',skip: '',title: 'Conversations',next: 'Next',)];

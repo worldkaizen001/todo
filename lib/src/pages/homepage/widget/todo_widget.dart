@@ -17,16 +17,32 @@ class _TodoWidgetState extends State<TodoWidget> {
       children: [
         CheckboxListTile(
 
-            tileColor: Colors.grey,
-            activeColor: Colors.red,
-            checkColor: Colors.deepPurple,
-            selectedTileColor: Colors.teal,
+            // tileColor:  const Color(0xffffffff),
+            activeColor: Colors.deepPurple,
 
-            title: Text(widget.title,style: TextStyle(
-              decoration: value ? TextDecoration.lineThrough : TextDecoration.none,
 
-            ),),
-            subtitle: Text(widget.reward),
+            // checkColor: Colors.yellow,
+
+
+
+            title: Text(widget.title,style: GoogleFonts.quicksand(
+                textStyle:  TextStyle(
+                  decoration: value ? TextDecoration.lineThrough : TextDecoration.none,
+
+                  color: const Color(0xffffffff),
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
+
+                )),
+           ),
+            subtitle: Text(widget.reward,style: GoogleFonts.quicksand(
+                textStyle:  const TextStyle(
+
+                  color:  Color(0xffffffff),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+
+                ))),
             selected: value,
 
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -35,8 +51,9 @@ class _TodoWidgetState extends State<TodoWidget> {
                 value = val!;
               });
         }),
-        SizedBox(
-          height: 3,
+        const Divider(
+          height: 4,
+          color: Colors.grey,
         )
       ],
     );
